@@ -1,4 +1,5 @@
 import { useState, type KeyboardEvent } from 'react';
+import { useTween } from '../motion/useTween';
 import { VizFrame } from './VizFrame';
 
 export interface MapPoint {
@@ -27,11 +28,13 @@ const STEPS: Record<string, [number, number]> = {
 
 export function EmbeddingMap({ title, points, size = 8, onMove }: Props) {
   const [selected, setSelected] = useState<string | null>(null);
+  const shown = useTween(points.flatMap((p) => [p.x, p.y]), 500);
   const width = size * CELL + PAD * 2;
   const sx = (x: number) => PAD + x * CELL;
   const sy = (y: number) => PAD + (size - y) * CELL;
   const clamp = (v: number) => Math.max(0, Math.min(size, v));
   const range = Array.from({ length: size + 1 }, (_, i) => i);
+  const at = (i: number): [number, number] => [shown[2 * i] ?? points[i].x, shown[2 * i + 1] ?? points[i].y];
 
   function onKey(e: KeyboardEvent, p: MapPoint) {
     if (!p.movable || !onMove) return;
@@ -51,8 +54,8 @@ export function EmbeddingMap({ title, points, size = 8, onMove }: Props) {
     <VizFrame title={title} table={table}>
       {onMove && (
         <p className="viz-help">
-          Tap a word with a dashed outline, then tap a spot on the grid. With a keyboard, focus the word and use the
-          arrow keys.
+          Tap a word with a dashed outline, then tap a spot on the grid. With a keyboard, focus the word and use the arrow
+          keys.
         </p>
       )}
       <svg viewBox={`0 0 ${width} ${width}`} className="embedding-map" role="group" aria-label={title}>
@@ -64,17 +67,19 @@ export function EmbeddingMap({ title, points, size = 8, onMove }: Props) {
         ))}
         <line className="axis" x1={sx(0)} y1={sy(0)} x2={sx(size)} y2={sy(0)} />
         <line className="axis" x1={sx(0)} y1={sy(0)} x2={sx(0)} y2={sy(size)} />
-        {points.map((p) => (
-          <line key={`v-${p.label}`} className={`vec ${p.kind ?? 'word'}`} x1={sx(0)} y1={sy(0)} x2={sx(p.x)} y2={sy(p.y)} />
-        ))}
-        {points.map((p) => {
+        {points.map((p, i) => {
+          const [x, y] = at(i);
+          return <line key={`v-${p.label}`} className={`vec ${p.kind ?? 'word'}`} x1={sx(0)} y1={sy(0)} x2={sx(x)} y2={sy(y)} />;
+        })}
+        {points.map((p, i) => {
+          const [x, y] = at(i);
           const classes = ['pt', p.kind ?? 'word', p.movable ? 'movable' : '', selected === p.label ? 'selected' : '']
             .filter(Boolean)
             .join(' ');
           const dot = (
             <>
-              <circle className={classes} cx={sx(p.x)} cy={sy(p.y)} r={7} />
-              <text x={sx(p.x) + 9} y={sy(p.y) - 9}>
+              <circle className={classes} cx={sx(x)} cy={sy(y)} r={7} />
+              <text x={sx(x) + 9} y={sy(y) - 9}>
                 {p.label}
               </text>
             </>
@@ -102,6 +107,9 @@ export function EmbeddingMap({ title, points, size = 8, onMove }: Props) {
               <circle
                 key={`t-${x}-${y}`}
                 className="grid-target"
+                role="button"
+                tabIndex={-1}
+                aria-label={`Move ${selected} to (${x}, ${y})`}
                 cx={sx(x)}
                 cy={sy(y)}
                 r={12}

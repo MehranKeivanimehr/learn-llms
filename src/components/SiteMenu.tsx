@@ -1,41 +1,13 @@
 import { useEffect, useId, useState } from 'react';
 import { getProgressStore } from '../engine/progressStore';
 
-type Theme = 'system' | 'light' | 'dark';
-const THEME_KEY = 'learnllms.theme';
-
-function readTheme(): Theme {
-  try {
-    const t = localStorage.getItem(THEME_KEY);
-    return t === 'light' || t === 'dark' ? t : 'system';
-  } catch {
-    return 'system';
-  }
-}
-
-function applyTheme(t: Theme) {
-  const root = document.documentElement;
-  if (t === 'system') delete root.dataset.theme;
-  else root.dataset.theme = t;
-  try {
-    if (t === 'system') localStorage.removeItem(THEME_KEY);
-    else localStorage.setItem(THEME_KEY, t);
-  } catch {
-    // Storage blocked: the theme still applies for this page view.
-  }
-}
-
-const THEME_LABELS: Record<Theme, string> = { system: 'Match my device', light: 'Light', dark: 'Dark' };
-
 export default function SiteMenu({ trackHref }: { trackHref: string }) {
   const [open, setOpen] = useState(false);
-  const [theme, setTheme] = useState<Theme>('system');
   const [exported, setExported] = useState<string | null>(null);
   const [importText, setImportText] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const id = useId();
 
-  useEffect(() => setTheme(readTheme()), []);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -66,23 +38,6 @@ export default function SiteMenu({ trackHref }: { trackHref: string }) {
       {open && (
         <div id={`${id}-panel`} className="menu-panel">
           <a href={trackHref}>Level map</a>
-          <fieldset>
-            <legend>Theme</legend>
-            {(Object.keys(THEME_LABELS) as Theme[]).map((t) => (
-              <label key={t}>
-                <input
-                  type="radio"
-                  name={`${id}-theme`}
-                  checked={theme === t}
-                  onChange={() => {
-                    setTheme(t);
-                    applyTheme(t);
-                  }}
-                />{' '}
-                {THEME_LABELS[t]}
-              </label>
-            ))}
-          </fieldset>
           <section>
             <h2>Your progress</h2>
             <button type="button" onClick={() => setExported(getProgressStore().exportString())}>

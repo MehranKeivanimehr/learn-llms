@@ -27,19 +27,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonical} />
     <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
-    <script is:inline>
-      try {
-        var t = localStorage.getItem('learnllms.theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
-      } catch (e) {}
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <a class="brand" href={withBase('')}>Learn LLMs</a>
       <nav aria-label="Main">
-        <a href={withBase('inside/')}>How LLMs Work Inside</a>
+        <a href={withBase('inside/')}>Levels</a>
         <a href={withBase('about/')}>About</a>
       </nav>
       <span class="spacer"></span>
