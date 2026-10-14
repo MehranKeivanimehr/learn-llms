@@ -1,18 +1,34 @@
 ---
 import { getCollection } from 'astro:content';
+import PlayButton from '../components/PlayButton';
 import TrackProgress from '../components/TrackProgress';
 import Layout from '../layouts/Layout.astro';
 import { sortLevels, toLevelInfo } from '../lib/levels';
 import { withBase } from '../lib/url';
+import '../styles/home.css';
 
 const levels = sortLevels(await getCollection('levels')).map(toLevelInfo);
-const firstHref = levels[0]?.href ?? withBase('inside/');
+const FLOATERS = ['token', 'Paris', 'attention', 'softmax', 'embed', 'top-k', 'query', 'key', 'value', 'MLP', 'merge', 'logits'];
+const place = (i: number) => `left:${(i * 37) % 88 + 3}%;top:${(i * 53) % 78 + 8}%;animation-delay:${-i * 1.3}s`;
 ---
-<Layout title="Learn LLMs" description="Learn how large language models work by playing with tiny, real models right in your browser. Free, interactive, no sign-up.">
-  <section class="hero">
-    <h1>Learn how LLMs work — by playing with them</h1>
-    <p class="lead">Every level hands you a tiny, real language model to poke at. Explore an idea, solve a puzzle, and — if you like — write the code yourself.</p>
-    <p><a class="button primary" href={firstHref}>Start level 1</a></p>
+<Layout title="Learn LLMs" description="Learn how large language models work by playing with tiny, real models in your browser: type commands, watch them react, and solve puzzles.">
+  <section class="splash">
+    <div class="floaters" aria-hidden="true">
+      {FLOATERS.map((w, i) => <span class="floater" style={place(i)}>{w}</span>)}
+    </div>
+    <div class="splash-inner">
+      <h1>Learn how LLMs work — by playing with them</h1>
+      <p class="lead">Type commands, watch a tiny real model react, and solve puzzles that reveal what happens inside AI chatbots.</p>
+      <PlayButton client:load levels={levels.map((l) => ({ levelId: l.levelId, href: l.href }))} />
+    </div>
+  </section>
+  <section class="how">
+    <h2>How it works</h2>
+    <ol class="how-steps">
+      <li><strong>Read</strong> a short lesson and watch a live demo.</li>
+      <li><strong>Play</strong> by typing commands in the terminal or using the canvas.</li>
+      <li><strong>Solve</strong> the goal, then write the code yourself if you like.</li>
+    </ol>
   </section>
   <section class="track-card">
     <h2><a href={withBase('inside/')}>How LLMs Work Inside</a></h2>

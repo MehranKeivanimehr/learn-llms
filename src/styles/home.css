@@ -1,0 +1,15 @@
+.splash { position: relative; overflow: hidden; display: grid; place-items: center; min-height: 62vh; padding: 3rem 1.5rem; border-radius: 18px; text-align: center; color: #fff; background-color: var(--canvas); background-image: radial-gradient(rgba(255, 255, 255, .12) 1px, transparent 1px); background-size: 24px 24px; }
+.splash-inner { position: relative; z-index: 1; max-width: 760px; }
+.splash h1 { margin: 0 0 .75rem; font-size: clamp(2rem, 5vw, 3.4rem); }
+.splash .lead { margin: 0 auto 1.6rem; max-width: 52ch; font-size: 1.2rem; color: var(--on-canvas-muted); }
+.button.play { padding: .75rem 2.2rem; border: none; border-radius: 999px; background: var(--yellow); color: var(--on-yellow); font-size: 1.3rem; font-weight: 800; box-shadow: 0 5px 0 rgba(0, 0, 0, .25); transition: transform .15s; }
+.button.play:hover { transform: translateY(-2px); }
+.floaters { position: absolute; inset: 0; }
+.floater { position: absolute; padding: .2rem .8rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .45); background: rgba(8, 30, 66, .35); color: #fff; font-family: var(--mono); font-size: .9rem; animation: drift 9s ease-in-out infinite; }
+@keyframes drift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-22px); } }
+.how { margin-top: 2rem; }
+.how-steps { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); counter-reset: step; }
+.how-steps li { position: relative; padding: 1rem 1rem 1rem 3.4rem; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); counter-increment: step; }
+.how-steps li::before { content: counter(step); position: absolute; left: 1rem; top: 1rem; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--accent); color: var(--accent-text); font-weight: 800; }
+.track-card, .coming-soon { margin-top: 1.25rem; padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+.lead { font-size: 1.15rem; max-width: 60ch; }
