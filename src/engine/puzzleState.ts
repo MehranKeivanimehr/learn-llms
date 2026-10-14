@@ -14,7 +14,9 @@ export type HostAction<A> =
   | { type: 'reset' }
   | { type: 'hint' }
   | { type: 'startReplay' }
-  | { type: 'endReplay' };
+  | { type: 'endReplay' }
+  | { type: 'startDemo' }
+  | { type: 'endDemo' };
 
 export function initHost<S, A>(def: PuzzleDef<S, A>): HostState<S> {
   return { history: [def.start()], moves: 0, hintsShown: 0, usedSolution: false, replaying: false };
@@ -46,6 +48,10 @@ export function hostReducer<S, A>(def: PuzzleDef<S, A>) {
         return { ...host, history: [def.start()], moves: 0, usedSolution: true, replaying: true };
       case 'endReplay':
         return { ...host, replaying: false };
+      case 'startDemo':
+        return { ...host, history: [def.start()], moves: 0, replaying: true };
+      case 'endDemo':
+        return { ...host, history: [def.start()], moves: 0, replaying: false };
     }
   };
 }

@@ -61,4 +61,21 @@ describe('host reducer', () => {
     h = reduce(h, { type: 'act', action: 'inc' });
     expect(currentState(h)).toEqual({ n: 2 });
   });
+  it('demo mode locks input, keeps usedSolution false and resets when it ends', () => {
+    let h = initHost(counter);
+    h = reduce(h, { type: 'act', action: 'inc' });
+    h = reduce(h, { type: 'startDemo' });
+    expect(currentState(h)).toEqual({ n: 0 });
+    expect(h.replaying).toBe(true);
+    expect(h.usedSolution).toBe(false);
+    expect(reduce(h, { type: 'act', action: 'inc' })).toBe(h);
+    h = reduce(h, { type: 'act', action: 'inc', replay: true });
+    h = reduce(h, { type: 'act', action: 'inc', replay: true });
+    expect(currentState(h)).toEqual({ n: 2 });
+    h = reduce(h, { type: 'endDemo' });
+    expect(currentState(h)).toEqual({ n: 0 });
+    expect(h.moves).toBe(0);
+    expect(h.replaying).toBe(false);
+    expect(h.usedSolution).toBe(false);
+  });
 });
