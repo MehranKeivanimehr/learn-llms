@@ -39,6 +39,7 @@ export default function TrackMap({ levels }: { levels: CardLevel[] }) {
                 ) : (
                   <span className="badge">Not solved yet</span>
                 )}
+                {p?.examBest !== undefined && <span className="badge good">Exam {p.examBest}/5</span>}
                 {l.hasChallenge &&
                   (p?.challengePassed ? (
                     <span className="badge good">✔ Code challenge</span>

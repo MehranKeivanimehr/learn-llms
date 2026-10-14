@@ -62,6 +62,7 @@ describe('parseGlobal', () => {
   it('recognises simple global commands case-insensitively', () => {
     expect(parseGlobal(['HINT'], 8)).toEqual({ kind: 'hint' });
     expect(parseGlobal(['instructions'], 8)).toEqual({ kind: 'objective' });
+    expect(parseGlobal(['exam'], 8)).toEqual({ kind: 'exam' });
     expect(parseGlobal(['show', 'commands'], 8)).toEqual({ kind: 'help' });
     expect(parseGlobal(['help', 'Add'], 8)).toEqual({ kind: 'help', topic: 'add' });
   });

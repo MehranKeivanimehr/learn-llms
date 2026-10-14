@@ -153,4 +153,25 @@ describe('progress store', () => {
     s.dismissNotice();
     expect(s.notice).toBeNull();
   });
+
+  it('markExam keeps the best exam score and the other fields', () => {
+    const s = createProgressStore(new MemoryStorage());
+    s.markSolved('inside-1', 2);
+    s.markExam('inside-1', 3);
+    s.markExam('inside-1', 5);
+    s.markExam('inside-1', 4);
+    expect(s.level('inside-1')).toEqual({ solved: true, bestMoves: 2, examBest: 5 });
+  });
+
+  it('a level can have an exam score without being solved', () => {
+    const s = createProgressStore(new MemoryStorage());
+    s.markExam('inside-2', 1);
+    expect(s.level('inside-2')).toEqual({ solved: false, examBest: 1 });
+  });
+
+  it.each([[-1], [1.5], ['5']])('rejects an imported exam score of %s', (bad) => {
+    const s = createProgressStore(new MemoryStorage());
+    const code = btoa(JSON.stringify({ version: 1, levels: { x: { solved: true, examBest: bad } } }));
+    expect(s.importString(code).ok).toBe(false);
+  });
 });

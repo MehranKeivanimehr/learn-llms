@@ -12,23 +12,29 @@ interface Props {
   par: number;
   usedSolution: boolean;
   nextHref: string;
-  nextTitle: string;
+  /** Label for the link that skips the exam, e.g. "Skip to next level". */
+  skipLabel: string;
+  onExam: () => void;
   onClose: () => void;
 }
 
-export function LevelCompleteDialog({ moves, par, usedSolution, nextHref, nextTitle, onClose }: Props) {
+export function LevelCompleteDialog({ moves, par, usedSolution, nextHref, skipLabel, onExam, onClose }: Props) {
   return (
     <Modal labelledBy="complete-title" onClose={onClose} fallbackFocusId="terminal-input">
       <h2 id="complete-title">Solved!</h2>
       <p>{scoreText(moves, par, usedSolution)}</p>
+      <p>Check what you learned with a quick 5-question exam, or skip it and keep going.</p>
       <div className="modal-actions">
         <button type="button" onClick={onClose}>
           Keep playing
         </button>
-        <span className="spacer" />
-        <a className="button primary" data-autofocus href={nextHref}>
-          {nextTitle} →
+        <a className="button" href={nextHref}>
+          {skipLabel} →
         </a>
+        <span className="spacer" />
+        <button type="button" className="primary" data-autofocus onClick={onExam}>
+          Take the exam (5 questions)
+        </button>
       </div>
     </Modal>
   );

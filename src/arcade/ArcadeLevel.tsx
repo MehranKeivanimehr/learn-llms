@@ -4,9 +4,11 @@ import type { GlobalCommand } from '../commands/global';
 import { complete, helpText, interpret } from '../commands/interpret';
 import { ErrorBoundary, withBoundary } from '../engine/ErrorBoundary';
 import { getProgressStore } from '../engine/progressStore';
+import { useProgress } from '../engine/useProgress';
 import { currentState, hostReducer, initHost } from '../engine/puzzleState';
 import type { LevelInfo } from '../lib/levels';
 import { usePrefersReducedMotion } from '../motion/useTween';
+import { ExamDialog } from './ExamDialog';
 import { GoalWindow } from './GoalWindow';
 import { HelpBar } from './HelpBar';
 import { IntroDialog } from './IntroDialog';
@@ -36,7 +38,7 @@ interface Props {
   trackHref: string;
 }
 
-type DialogKind = 'intro' | 'levels' | 'complete' | null;
+type DialogKind = 'intro' | 'levels' | 'complete' | 'exam' | null;
 
 function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { module: LevelModule }) {
   const { def, Scene, commands } = module;
@@ -46,6 +48,7 @@ function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { 
   const conditions = def.conditions(state);
   const solved = conditions.every((c) => c.met);
   const reduced = usePrefersReducedMotion();
+  const progress = useProgress();
 
   const [lines, setLines] = useState<TermLine[]>(() => [
     mk('info', `Level ${level.order}: ${level.title}. Type "help" to see the commands, or use the canvas.`),
@@ -155,6 +158,9 @@ function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { 
         break;
       case 'solution':
         void playSolution();
+        break;
+      case 'exam':
+        setDialog('exam');
         break;
       case 'code':
         if (challenge) setCodeOpen(true);
@@ -308,7 +314,24 @@ function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { 
           par={def.par}
           usedSolution={host.usedSolution}
           nextHref={next ? next.href : trackHref}
+          skipLabel={next ? 'Skip to next level' : 'Skip to the level map'}
+          onExam={() => setDialog('exam')}
+          onClose={() => setDialog(null)}
+        />
+      )}
+      {dialog === 'exam' && (
+        <ExamDialog
+          exam={module.exam}
+          levelTitle={level.title}
+          commands={commands}
+          start={def.start()}
+          best={progress.levels[level.levelId]?.examBest ?? null}
+          nextHref={next ? next.href : trackHref}
           nextTitle={next ? `Next: ${next.title}` : 'Back to the level map'}
+          onFinish={(score) => {
+            getProgressStore().markExam(level.levelId, score);
+            print(mk('ok', `Exam finished: ${score} out of ${module.exam.questions.length}.`));
+          }}
           onClose={() => setDialog(null)}
         />
       )}

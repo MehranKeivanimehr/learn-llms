@@ -34,6 +34,9 @@ export function LevelSelect({ levels, currentId, onClose }: Props) {
                 <span>
                   {l.title}
                   {solved && <span className="sr-only"> (solved)</span>}
+                  {progress.levels[l.levelId]?.examBest !== undefined && (
+                    <small className="tile-exam">Exam {progress.levels[l.levelId]?.examBest}/5</small>
+                  )}
                 </span>
               </a>
             </li>

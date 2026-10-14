@@ -4,6 +4,8 @@ export interface LevelProgress {
   solved: boolean;
   bestMoves?: number;
   challengePassed?: boolean;
+  /** Best exam score (number of correct answers). */
+  examBest?: number;
 }
 
 export interface Progress {
@@ -22,6 +24,8 @@ export interface ProgressStore {
   level(id: string): LevelProgress;
   markSolved(id: string, moves: number | null): void;
   markChallengePassed(id: string): void;
+  /** Records an exam score, keeping the best one. */
+  markExam(id: string, score: number): void;
   exportString(): string;
   importString(code: string): { ok: true } | { ok: false; error: string };
   resetAll(): void;
@@ -55,6 +59,10 @@ export function parseProgress(raw: unknown): Progress | null {
     if (l.challengePassed !== undefined) {
       if (typeof l.challengePassed !== 'boolean') return null;
       entry.challengePassed = l.challengePassed;
+    }
+    if (l.examBest !== undefined) {
+      if (typeof l.examBest !== 'number' || !Number.isInteger(l.examBest) || l.examBest < 0) return null;
+      entry.examBest = l.examBest;
     }
     levels[id] = entry;
   }
@@ -123,6 +131,10 @@ export function createProgressStore(storage: StorageLike | null): ProgressStore 
     markChallengePassed(id) {
       const prev = data.levels[id] ?? { solved: false };
       setLevel(id, { ...prev, challengePassed: true });
+    },
+    markExam(id, score) {
+      const prev = data.levels[id] ?? { solved: false };
+      setLevel(id, { ...prev, examBest: Math.max(prev.examBest ?? 0, score) });
     },
     exportString: () => btoa(JSON.stringify(data)),
     importString(code) {

@@ -4,6 +4,7 @@ const BUTTONS: [string, string][] = [
   ['Undo', 'undo'],
   ['Goal', 'goal'],
   ['Solution', 'solution'],
+  ['Exam', 'exam'],
   ['Code', 'code'],
 ];
 

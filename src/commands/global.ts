@@ -1,4 +1,4 @@
-type SimpleKind = 'levels' | 'hint' | 'reset' | 'undo' | 'goal' | 'objective' | 'solution' | 'code' | 'clear';
+type SimpleKind = 'levels' | 'hint' | 'reset' | 'undo' | 'goal' | 'objective' | 'solution' | 'code' | 'exam' | 'clear';
 
 export type GlobalCommand = { kind: 'help'; topic?: string } | { kind: 'level'; n: number } | { kind: SimpleKind };
 
@@ -19,10 +19,11 @@ export const GLOBAL_COMMANDS: GlobalInfo[] = [
   { name: 'objective', usage: 'objective', help: 'Read the lesson again.' },
   { name: 'solution', usage: 'solution', help: 'Watch the solution.' },
   { name: 'code', usage: 'code', help: 'Open the code challenge.' },
+  { name: 'exam', usage: 'exam', help: 'Take this level’s 5-question exam.' },
   { name: 'clear', usage: 'clear', help: 'Clear the terminal.' },
 ];
 
-const SIMPLE = new Set<SimpleKind>(['levels', 'hint', 'reset', 'undo', 'goal', 'objective', 'solution', 'code', 'clear']);
+const SIMPLE = new Set<SimpleKind>(['levels', 'hint', 'reset', 'undo', 'goal', 'objective', 'solution', 'code', 'exam', 'clear']);
 const ALIASES: Record<string, string> = { instructions: 'objective', '?': 'help' };
 
 export function parseGlobal(
