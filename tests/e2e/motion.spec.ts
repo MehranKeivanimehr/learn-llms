@@ -35,3 +35,15 @@ test.describe('desktop', () => {
     });
   }
 });
+
+test.describe('laptop screen', () => {
+  test.use({ viewport: { width: 1366, height: 768 } });
+  test('the goal window and help bar stay on screen while the canvas scrolls', async ({ page }) => {
+    await openLevel(page, '04-sampling');
+    await page.locator('.scene-scroll').evaluate((el) => el.scrollTo(0, el.scrollHeight));
+    const goal = await page.getByRole('complementary', { name: 'Goal' }).boundingBox();
+    const help = await page.getByRole('navigation', { name: 'Quick commands' }).boundingBox();
+    expect(goal!.y).toBeGreaterThanOrEqual(0);
+    expect(help!.y + help!.height).toBeLessThanOrEqual(768);
+  });
+});

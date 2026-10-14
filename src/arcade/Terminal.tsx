@@ -18,6 +18,16 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
   const cursor = useRef(-1);
   const lastTab = useRef<string | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const wasBusy = useRef(busy);
+
+  // Disabling the input during a demo or replay drops focus; give it back afterwards (desktop only).
+  useEffect(() => {
+    if (wasBusy.current && !busy && window.matchMedia('(min-width: 900px)').matches && !document.querySelector('[aria-modal="true"]')) {
+      inputRef.current?.focus();
+    }
+    wasBusy.current = busy;
+  }, [busy]);
 
   useEffect(() => {
     const el = logRef.current;
@@ -54,7 +64,8 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
       const r = onComplete(value);
       if (r.line === value && r.options.length === 0) return;
       e.preventDefault();
-      lastTab.current = r.line;
+      // Remember the line only when this Tab made no progress, so the next Tab can move focus on.
+      lastTab.current = r.line === value ? value : null;
       if (r.line !== value) setValue(r.line);
       if (r.options.length > 1) onInfo(r.options.join('   '));
     }
@@ -77,7 +88,7 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
           </div>
         ))}
         {ghost !== null && (
-          <div className="term-line cmd">
+          <div className="term-line cmd ghost" aria-hidden="true">
             {ghost}
             <span className="caret" aria-hidden="true">
               ▌
@@ -93,6 +104,7 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
           $
         </span>
         <input
+          ref={inputRef}
           id="terminal-input"
           value={value}
           onChange={(e) => setValue(e.target.value)}

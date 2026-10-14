@@ -41,7 +41,10 @@
 .term-input input::placeholder { color: #8a929c; }
 
 /* ---------- canvas ---------- */
-.arcade-canvas { position: relative; min-height: 0; overflow: auto; background-color: var(--canvas); background-image: radial-gradient(rgba(255, 255, 255, .1) 1px, transparent 1px); background-size: 24px 24px; padding: 1rem 1rem 5.5rem; }
+/* The canvas itself never scrolls, so the goal window, help bar and burst stay put; .scene-scroll scrolls instead. */
+.arcade-canvas { position: relative; min-height: 0; overflow: hidden; display: flex; flex-direction: column; background-color: var(--canvas); background-image: radial-gradient(rgba(255, 255, 255, .1) 1px, transparent 1px); background-size: 24px 24px; }
+.scene-scroll { flex: 1; min-height: 0; overflow: auto; padding: 1rem 1rem 5.5rem; }
+@media (max-width: 899px) { .arcade-canvas { overflow: visible; } .scene-scroll { overflow: visible; padding-bottom: 1rem; } }
 .scene { max-width: 980px; margin: 0 auto; display: grid; gap: 1rem; color: var(--on-canvas); }
 @media (min-width: 900px) { .scene { padding-right: 270px; } }
 .canvas-message { color: var(--on-canvas); text-align: center; margin-top: 30vh; font-size: 1.1rem; }

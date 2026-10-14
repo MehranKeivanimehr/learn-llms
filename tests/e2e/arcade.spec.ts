@@ -102,3 +102,35 @@ test('"Solution" replays the answer and records the level as solved without a sc
   await expectSolved(page);
   await expect(page.getByRole('dialog', { name: 'Solved!' })).toContainText('watched the solution');
 });
+
+test('a second Tab after completing a command lists the arguments and keeps focus', async ({ page }) => {
+  await openLevel(page, L1);
+  await command(page).fill('ad');
+  await command(page).press('Tab');
+  await expect(command(page)).toHaveValue('add ');
+  await command(page).press('Tab');
+  await expect(command(page)).toBeFocused();
+  await expect(terminalLog(page)).toContainText('France');
+});
+
+test('after "Show me" the command line has keyboard focus again', async ({ page }) => {
+  await page.goto(`/inside/${L1}/`);
+  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Next →' }).click();
+  await page.getByRole('button', { name: 'Show me' }).click();
+  await expect(terminalLog(page)).toContainText('Your turn!', { timeout: 15_000 });
+  await expect(command(page)).toBeFocused();
+});
+
+test('the demo typing line is hidden from screen readers', async ({ page }) => {
+  await page.goto(`/inside/${L1}/`);
+  for (let i = 0; i < 3; i++) await page.getByRole('button', { name: 'Next →' }).click();
+  await page.getByRole('button', { name: 'Show me' }).click();
+  const ghost = terminalLog(page).locator('.term-line.ghost');
+  await expect(ghost).toBeVisible();
+  await expect(ghost).toHaveAttribute('aria-hidden', 'true');
+});
+
+test('the level 2 token counter is not a live region', async ({ page }) => {
+  await openLevel(page, '02-tokens');
+  await expect(canvas(page).locator('.big-number')).not.toHaveAttribute('aria-live', /.+/);
+});

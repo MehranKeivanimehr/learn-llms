@@ -16,7 +16,7 @@ export default function Inside2Scene({ state, dispatch }: StageProps<Inside2Stat
         title={`"${TARGET_TEXT}"`}
         table={{ columns: ['#', 'Token'], rows: state.tokens.map((t, i) => [String(i + 1), show(t)]) }}
       >
-        <p className="big-number" aria-live="polite">
+        <p className="big-number">
           <span>{Math.round(count)}</span>tokens
         </p>
         <ol className="chip-row" aria-label="Tokens">

@@ -273,11 +273,13 @@ function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { 
                 onClose={() => setGoalOpen(false)}
               />
             )}
-            <ErrorBoundary name="scene">
-              <div className="scene">
-                <Scene state={state} dispatch={sceneDispatch} solved={solved} />
-              </div>
-            </ErrorBoundary>
+            <div className="scene-scroll">
+              <ErrorBoundary name="scene">
+                <div className="scene">
+                  <Scene state={state} dispatch={sceneDispatch} solved={solved} />
+                </div>
+              </ErrorBoundary>
+            </div>
             {burst && (
               <SolvedBurst
                 onDone={() => {
