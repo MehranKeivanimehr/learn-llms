@@ -17,7 +17,7 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
   const history = useRef<string[]>([]);
   const cursor = useRef(-1);
   const lastTab = useRef<string | null>(null);
-  const logRef = useRef<HTMLOListElement>(null);
+  const logRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = logRef.current;
@@ -70,21 +70,21 @@ export function Terminal({ title, lines, busy, ghost, onRun, onComplete, onInfo 
         </span>
         {title}
       </div>
-      <ol ref={logRef} className="term-log" role="log" aria-live="polite" aria-label="Command history">
+      <div ref={logRef} className="term-log" role="log" aria-live="polite" aria-label="Command history">
         {lines.map((l) => (
-          <li key={l.id} className={`term-line ${l.kind}`}>
+          <div key={l.id} className={`term-line ${l.kind}`}>
             {l.text}
-          </li>
+          </div>
         ))}
         {ghost !== null && (
-          <li className="term-line cmd">
+          <div className="term-line cmd">
             {ghost}
             <span className="caret" aria-hidden="true">
               ▌
             </span>
-          </li>
+          </div>
         )}
-      </ol>
+      </div>
       <form className="term-input" onSubmit={(e) => e.preventDefault()}>
         <label htmlFor="terminal-input" className="sr-only">
           Command

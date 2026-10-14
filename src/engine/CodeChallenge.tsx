@@ -1,8 +1,11 @@
 import { javascript } from '@codemirror/lang-javascript';
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { tags } from '@lezer/highlight';
 import CodeMirror from '@uiw/react-codemirror';
 import { marked } from 'marked';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ChallengeDef } from '../challenges/types';
 import { runInWorker, type RunOutcome } from './codeRunnerClient';
 import { getProgressStore } from './progressStore';
@@ -11,14 +14,10 @@ const extensions = [
   javascript(),
   EditorView.lineWrapping,
   EditorView.contentAttributes.of({ 'aria-label': 'Code editor' }),
+  // The dark theme's comment colour is too faint; this keeps comments readable (≥ 4.5:1).
+  Prec.highest(syntaxHighlighting(HighlightStyle.define([{ tag: tags.comment, color: '#9aa3ad', fontStyle: 'italic' }]))),
 ];
 
-function prefersDark(): boolean {
-  const t = document.documentElement.dataset.theme;
-  if (t === 'dark') return true;
-  if (t === 'light') return false;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches;
-}
 
 function Outcome({ outcome, def }: { outcome: RunOutcome | null; def: ChallengeDef }) {
   if (!outcome) return null;
@@ -53,10 +52,7 @@ export function CodeChallenge({ def, levelId }: { def: ChallengeDef; levelId: st
   const [code, setCode] = useState(def.starterCode);
   const [outcome, setOutcome] = useState<RunOutcome | null>(null);
   const [running, setRunning] = useState(false);
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const promptHtml = useMemo(() => marked.parse(def.prompt, { async: false }) as string, [def.prompt]);
-
-  useEffect(() => setTheme(prefersDark() ? 'dark' : 'light'), []);
 
   async function run() {
     setRunning(true);
@@ -80,7 +76,7 @@ export function CodeChallenge({ def, levelId }: { def: ChallengeDef; levelId: st
       <h2>{def.title}</h2>
       <div className="prose" dangerouslySetInnerHTML={{ __html: promptHtml }} />
       <div className="editor">
-        <CodeMirror value={code} onChange={setCode} extensions={extensions} minHeight="200px" theme={theme} />
+        <CodeMirror value={code} onChange={setCode} extensions={extensions} minHeight="200px" theme="dark" />
       </div>
       <div className="button-row">
         <button type="button" className="primary" onClick={run} disabled={running}>
