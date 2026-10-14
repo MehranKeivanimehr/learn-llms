@@ -1,23 +1,20 @@
 ---
 import { getCollection, render } from 'astro:content';
-import LevelShell from '../../engine/LevelShell.astro';
-import Layout from '../../layouts/Layout.astro';
+import ArcadeLevel from '../../arcade/ArcadeLevel';
+import ArcadeLayout from '../../layouts/ArcadeLayout.astro';
 import { sortLevels, toLevelInfo } from '../../lib/levels';
+import { withBase } from '../../lib/url';
 
 export async function getStaticPaths() {
   const entries = sortLevels(await getCollection('levels'));
   const all = entries.map(toLevelInfo);
-  return entries.map((entry, i) => ({
-    params: { slug: all[i].slug },
-    props: { entry, level: all[i], prev: all[i - 1] ?? null, next: all[i + 1] ?? null, all },
-  }));
+  return entries.map((entry, i) => ({ params: { slug: all[i].slug }, props: { entry, level: all[i], all } }));
 }
 
-const { entry, level, prev, next, all } = Astro.props;
+const { entry, level, all } = Astro.props;
 const { Content } = await render(entry);
 ---
-<Layout title={level.title} description={level.summary}>
-  <LevelShell level={level} prev={prev} next={next} all={all}>
-    <Content />
-  </LevelShell>
-</Layout>
+<ArcadeLayout title={level.title} description={level.summary}>
+  <div id="lesson" hidden><Content /></div>
+  <ArcadeLevel client:load level={level} levels={all} homeHref={withBase('')} trackHref={withBase('inside/')} />
+</ArcadeLayout>

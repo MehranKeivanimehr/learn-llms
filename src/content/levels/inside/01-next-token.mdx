@@ -6,27 +6,25 @@ title: Next-token prediction
 summary: An LLM does one thing over and over — it guesses the next word. See its guesses and learn to steer them.
 puzzle: inside-1
 challenge: inside-1
+demo:
+  - predict
+  - add a
+  - predict
+  - remove a
 ---
-import NextTokenExplorer from '../../../explore/NextTokenExplorer';
 
 ## One trick, repeated
 
-A large language model (LLM) — the technology behind AI chatbots — does one thing: it looks at the text so far — the **context** — and guesses what comes next. Then it adds that guess to the context and guesses again. A long answer is just this step, repeated many times.
+A large language model (LLM) — the technology behind AI chatbots — does one thing: it looks at the text so far (the **context**) and guesses what comes next. Then it adds that guess to the context and guesses again. A long answer is just this step, repeated.
 
-The guess isn't a single word. It's a **probability for every word the model knows**. After "The capital of France is", "Paris" might get 90%, "a" 2%, and thousands of other words share the rest.
+## Guesses are probabilities
 
-## Try it
+The guess isn't a single word. It's a **probability for every word the model knows**. After *"The capital of France is"*, "Paris" might get 90% and thousands of other words share the rest.
 
-Below is a tiny model that knows only 17 words. Build a context from the word chips and watch the predictions change. Try adding "France" — what happens to "Paris"?
+## Our tiny model
 
-<NextTokenExplorer client:visible />
-
-## What's going on inside?
-
-This toy model keeps a score for how strongly each word *pulls* toward each possible next word: "France" pulls hard toward "Paris", "Germany" toward "Berlin". Recent words pull harder than older ones. The model adds up all the pulls and turns the totals into probabilities.
-
-Real LLMs don't use a hand-written table. They *learn* billions of numbers from huge amounts of text, and they weigh every word in a long context in subtle ways — that's what the next levels are about. But the output is the same kind of thing: a probability for every possible next token.
+The canvas shows a tiny model that knows 17 words. Each word *pulls* toward the words that usually follow it — "France" pulls hard toward "Paris" — and recent words pull harder. Real LLMs learn billions of such numbers from text, but the output is the same kind of thing.
 
 ## Your turn
 
-In the puzzle, the context reads *"The capital of Germany is"*, so the model is sure the answer is "Berlin". Edit the context so its top guess becomes **"Paris"**.
+The context reads *"The capital of Germany is"*, so the model expects "Berlin". Make **"Paris"** the top guess. Type `add <word>` or `remove <word>`, or click the words on the canvas. Press **Show me** to see the commands in action.

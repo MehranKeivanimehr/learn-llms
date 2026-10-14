@@ -6,35 +6,24 @@ title: Tokens
 summary: LLMs don't read letters or words — they read tokens. Watch a tokenizer learn its pieces by merging common pairs.
 puzzle: inside-2
 challenge: inside-2
+demo:
+  - pairs
+  - merge w _
+  - pairs
 ---
-import BpeExplorer from '../../../explore/BpeExplorer';
-import { TokenStrip } from '../../../viz/TokenStrip';
 
 ## Not letters, not words: tokens
 
-In level 1 we pretended the model predicts *words*. Real LLMs predict **tokens** — chunks of text. A common word like "the" is usually one token. A rare word gets split into several pieces, like "token" + "izer".
+Real LLMs predict **tokens** — chunks of text. A common word like "the" is one token; a rare word is split into pieces like "token" + "izer". Whole words would be too many to list, and single letters would make every sentence very long.
 
-Why not just use whole words? There are too many of them (and new ones appear every day). Why not single letters? Then every sentence becomes very long, and the model has to do much more work. Tokens are the compromise.
+## How a tokenizer learns
 
-## How a tokenizer learns its pieces
+Most LLMs use **byte-pair encoding (BPE)**. Start from single characters and repeat: find the pair of neighbours that appears most often, and merge it into one new token everywhere. After thousands of merges, common words become single tokens.
 
-Most LLMs use **byte-pair encoding (BPE)**. It starts with single characters and repeats one simple step:
+## Why counting letters is hard
 
-1. Find the pair of neighbouring tokens that appears most often.
-2. Merge that pair into a new, longer token everywhere it appears.
-
-After thousands of merges, common words and word-parts become single tokens. Try it — spaces are shown as ␣:
-
-<BpeExplorer client:visible />
-
-## Why LLMs struggle to count letters
-
-Because the model sees tokens, not letters, a question like "how many r's are in *strawberry*?" is surprisingly hard. The model might see something like this:
-
-<TokenStrip client:visible title={'How a tokenizer might split "strawberry"'} tokens={['str', 'aw', 'berry']} />
-
-The letters are hidden inside the tokens. The model has to have *learned* how each token is spelled — it can't just look.
+Because the model sees tokens, not letters, "how many r's are in *strawberry*?" is surprisingly tricky: the model might see `str` · `aw` · `berry`, with the letters hidden inside.
 
 ## Your turn
 
-In the puzzle you start with "low lower lowest" as 16 single characters. Pick merges, one at a time, to squeeze it into **8 tokens or fewer** using at most 4 merges.
+Squeeze **"low lower lowest"** (16 characters; spaces are shown as `_`) into **8 tokens or fewer** using at most 4 merges. Type `pairs` to see the options and `merge <a> <b>` to merge, or click a pair on the canvas.

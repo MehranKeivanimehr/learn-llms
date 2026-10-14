@@ -3,33 +3,27 @@ levelId: inside-8
 track: inside
 order: 8
 title: "Boss: the generation loop"
-summary: Put it all together. A tiny transformer, trained right here, writes text one character at a time — and you steer it with the prompt and the temperature.
+summary: Put it all together. A tiny transformer, trained for this site, writes text one character at a time — and you steer it with the prompt and the temperature.
 puzzle: inside-8
 challenge: inside-8
+demo:
+  - generate
+  - 'prompt "mary had a "'
+  - temperature 0
 ---
-import GenerationExplorer from '../../../explore/GenerationExplorer';
 
 ## A real (tiny) language model
 
-This level runs an actual transformer in your browser. It has every piece you've met: embeddings, position signals, one attention block with an MLP and residual connections, and a final layer that scores every possible next character. (To keep it tiny, it skips layer norm.)
-
-It was trained on just two public-domain nursery rhymes, so it has basically memorized them. Real LLMs work the same way, but with billions of parameters, thousands of blocks' worth of computation and trillions of tokens of training text.
+This level runs an actual transformer in your browser: embeddings, position signals, one attention block with an MLP and residual connections, and a final layer that scores every next character. (It skips layer norm to stay tiny.) It was trained on two public-domain nursery rhymes, so it has basically memorized them.
 
 ## The loop
 
-Generation is the loop from level 1, for real:
+Generation is the loop from level 1, for real: turn the text into tokens (here, characters), get a probability for every next token, pick one (greedy or sampled), append it, repeat.
 
-1. Turn the text into tokens (here, single characters).
-2. Run the model to get a probability for every possible next token.
-3. Pick one (greedy or sampled — level 4).
-4. Append it and go back to step 1.
+## The context window
 
-The model has a **context window**: it can only see the last 16 characters. Anything earlier is simply gone. Real models have much bigger windows — hundreds of thousands of tokens — but the limit is the same idea.
-
-Step through it yourself:
-
-<GenerationExplorer client:visible />
+The model can only see the **last 16 characters**. Anything earlier is simply gone. Real models see hundreds of thousands of tokens, but the limit is the same idea.
 
 ## Your turn
 
-Make the model write **"little star"** — without typing "star" yourself. You can only change the prompt and the temperature. Watch out: "little" also appears in the other rhyme.
+Make the model write **"little star"** — without typing "star" yourself. Use `prompt "<text>"` (quotes keep spaces), `temperature <0–2>`, `reroll` and `generate`, or the controls on the canvas. Careful: "little" is also in the other rhyme.

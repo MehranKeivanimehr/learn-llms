@@ -6,32 +6,25 @@ title: Sampling
 summary: The model gives probabilities — you decide how to pick from them. Temperature, top-k and top-p trade creativity for reliability.
 puzzle: inside-4
 challenge: inside-4
+demo:
+  - set temperature 0.3
+  - sample 5
+  - set temperature 2
+  - sample 5
 ---
-import SamplingExplorer from '../../../explore/SamplingExplorer';
 
 ## From probabilities to one token
 
-The model's last step gives a probability for every possible next token. Something still has to **choose** one. That choice is called **sampling**, and it's controlled by a few settings you may have seen in AI tools.
+Something has to **choose** one token from the model's probabilities. Always taking the most likely one (*greedy*) is predictable but dull; rolling a weighted die (*sampling*) adds variety.
 
-- **Greedy:** always take the most likely token. Predictable, but often dull and repetitive.
-- **Random sampling:** roll a weighted die. Likely tokens win most of the time, but not always — that's where variety comes from.
+## Three knobs
 
-## The three knobs
+**Temperature** reshapes the probabilities: low makes the favourite dominate (0 = greedy), high flattens everything. **Top-k** keeps only the *k* most likely tokens. **Top-p** keeps the smallest group of top tokens whose probabilities add up to *p*.
 
-**Temperature** reshapes the probabilities before rolling the die. Low temperature (near 0) makes the favourite even more dominant; at 0 the choice becomes greedy. High temperature flattens everything, so unlikely tokens get picked more often.
+## Why it matters
 
-**Top-k** keeps only the *k* most likely tokens and throws the rest away.
-
-**Top-p** (also called *nucleus sampling*) keeps the smallest group of top tokens whose probabilities add up to at least *p* — say 90% — and throws away the long tail.
-
-Play with the knobs, then sample a few times:
-
-<SamplingExplorer client:visible />
-
-## Why this matters
-
-Low temperature is good for facts, code and anything that must be consistent. Higher temperature helps brainstorming and creative writing. Top-k and top-p let you keep some creativity while cutting off the silly long tail — like "spaceship" here.
+Low temperature suits facts and code; higher temperature suits brainstorming. Top-k and top-p keep some creativity while cutting off the silly long tail.
 
 ## Your turn
 
-The puzzle has two goals. First, make the model **completely predictable**. Then let it **vary** between at least three sensible words while making silly words impossible.
+After *"The cat sat on the…"*: first make the output **100% predictable**, then let it **vary between at least 3 sensible words** with no silly ones. Use `set temperature|top-k|top-p <value>` and `sample`, or the sliders.

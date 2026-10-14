@@ -6,31 +6,24 @@ title: Embeddings
 summary: Inside the model, every token becomes a list of numbers — a point in space where similar meanings sit close together.
 puzzle: inside-3
 challenge: inside-3
+demo:
+  - similar king queen
+  - similar king apple
+  - move queen 2 6
 ---
-import EmbeddingExplorer from '../../../explore/EmbeddingExplorer';
 
 ## From token to vector
 
-A model can't do math on the text "queen". So the first thing it does is look up each token in a big table and replace it with a list of numbers called an **embedding** (or vector). Real models use hundreds or thousands of numbers per token. We'll use just two, so we can draw them on a map.
+A model can't do math on the text "queen", so it looks each token up in a table and replaces it with a list of numbers: an **embedding**. Real models use thousands of numbers per token; ours uses two, so we can draw them as arrows.
 
-Nobody writes these numbers by hand. They are learned during training, and something remarkable happens: tokens with related meanings end up pointing in **similar directions**.
+## Similar meanings point the same way
 
-## Measuring similarity
-
-To compare two vectors, models often use **cosine similarity**: how closely do the two arrows point the same way? It's 1 for exactly the same direction, 0 for a right angle and −1 for opposite directions. The length of the arrows doesn't matter — only the direction.
-
-Move the words around (tap a word, then tap a spot) and compare any two:
-
-<EmbeddingExplorer client:visible />
+To compare two vectors, models often use **cosine similarity**: how closely do the arrows point in the same direction? 1 means the same direction, 0 a right angle, −1 opposite. Length doesn't matter.
 
 ## Directions carry meaning
 
-In well-trained embeddings, directions can mean something. Going from "man" to "woman" is a step in one direction; going from "king" to "queen" is roughly the same step. That's why the famous trick works:
-
-**king − man + woman ≈ queen**
-
-Real embedding spaces are messy, and this works only approximately — but it shows that the model has organized meaning into geometry.
+In trained embeddings, going from "man" to "woman" is roughly the same step as from "king" to "queen". That's why **king − man + woman ≈ queen** works (approximately).
 
 ## Your turn
 
-In the puzzle, "queen" is in the wrong place, so the nearest word to *king − man + woman* is "prince". Move "queen" so it becomes the nearest word.
+"queen" is in the wrong place, so the nearest word to *king − man + woman* is "prince". Move it with `move queen <x> <y>`, or tap "queen" and then a grid point. `similar <a> <b>` prints a similarity.

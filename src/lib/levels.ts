@@ -8,6 +8,7 @@ export interface LevelInfo {
   summary: string;
   puzzle: string;
   challenge: string | null;
+  demo: string[];
   slug: string;
   href: string;
 }
@@ -27,6 +28,7 @@ export function toLevelInfo(entry: LevelEntry): LevelInfo {
     summary: entry.data.summary,
     puzzle: entry.data.puzzle,
     challenge: entry.data.challenge ?? null,
+    demo: entry.data.demo,
     slug,
     href: withBase(`${entry.data.track}/${slug}/`),
   };

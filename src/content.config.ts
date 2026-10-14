@@ -11,6 +11,7 @@ const levels = defineCollection({
     summary: z.string(),
     puzzle: z.string(),
     challenge: z.string().optional(),
+    demo: z.array(z.string()).default([]),
   }),
 });
 
