@@ -27,3 +27,14 @@ export async function type(page: Page, line: string) {
 export async function expectSolved(page: Page) {
   await expect(page.getByRole('dialog', { name: 'Solved!' })).toBeVisible({ timeout: 10_000 });
 }
+
+/** Clicks `button` until the level is solved (at most `max` times). */
+export async function clickUntilSolved(page: Page, button: ReturnType<Page['getByRole']>, max: number) {
+  const solvedDialog = page.getByRole('dialog', { name: 'Solved!' });
+  for (let i = 0; i < max; i++) {
+    if (await solvedDialog.isVisible()) return;
+    if (await page.locator('.burst').count()) break;
+    await button.click();
+  }
+  await expectSolved(page);
+}
