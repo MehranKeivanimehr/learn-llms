@@ -1,0 +1,32 @@
+---
+levelId: inside-6
+track: inside
+order: 6
+title: Word order & heads
+summary: Attention on its own can't tell "dog bites man" from "man bites dog". Positional encodings fix that — and multiple heads let the model look for several things at once.
+puzzle: inside-6
+challenge: inside-6
+---
+import OrderExplorer from '../../../explore/OrderExplorer';
+
+## Attention is order-blind
+
+Attention compares every word with every other word — but nothing in that comparison says *where* a word is. Shuffle the words and each one gets exactly the same scores. To plain attention, "dog bites man" and "man bites dog" are the same bag of words.
+
+That's a problem: in English, word order tells you who did what to whom.
+
+## Adding positions
+
+The fix is to add a **position signal** to each word's vector before attention runs. The original transformer used **sinusoidal positional encodings**: each position gets a unique pattern of sine and cosine waves at different speeds. Many newer models use other schemes (like *rotary* encodings), but the idea is the same — give attention a way to see *where* each word is.
+
+Below, the question "who got hurt?" acts as a query that looks for the word right after the verb. Turn position signals on and off and compare the two sentences:
+
+<OrderExplorer client:visible />
+
+## Many heads
+
+A single attention pass can only look for one kind of thing. Real transformers run several attention **heads** side by side — often dozens. One head might track who did an action, another might link pronouns to nouns, another might watch punctuation. Their outputs are combined, so each word gets information from all of them.
+
+## Your turn
+
+In the puzzle the model can't tell the sentences apart. Turn on position signals and set their strength so the model answers correctly for **both** sentences with confidence of at least 0.80.

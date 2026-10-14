@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import '../styles/level.css';
+import ProgressNotice from '../components/ProgressNotice';
+import SiteMenu from '../components/SiteMenu';
+import { withBase } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const fullTitle = title === 'Learn LLMs' ? title : `${title} · Learn LLMs`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Mehran Keivanimehr" />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <link rel="icon" href={withBase('favicon.svg')} type="image/svg+xml" />
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('learnllms.theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href={withBase('')}>Learn LLMs</a>
+      <nav aria-label="Main">
+        <a href={withBase('inside/')}>How LLMs Work Inside</a>
+        <a href={withBase('about/')}>About</a>
+      </nav>
+      <span class="spacer"></span>
+      <SiteMenu client:load trackHref={withBase('inside/')} />
+    </header>
+    <main id="main">
+      <ProgressNotice client:load />
+      <slot />
+    </main>
+    <footer class="site-footer">Created by Mehran Keivanimehr · Free and open source (MIT) · No cookies, no tracking</footer>
+  </body>
+</html>

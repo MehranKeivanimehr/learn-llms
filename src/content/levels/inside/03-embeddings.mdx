@@ -1,0 +1,36 @@
+---
+levelId: inside-3
+track: inside
+order: 3
+title: Embeddings
+summary: Inside the model, every token becomes a list of numbers — a point in space where similar meanings sit close together.
+puzzle: inside-3
+challenge: inside-3
+---
+import EmbeddingExplorer from '../../../explore/EmbeddingExplorer';
+
+## From token to vector
+
+A model can't do math on the text "queen". So the first thing it does is look up each token in a big table and replace it with a list of numbers called an **embedding** (or vector). Real models use hundreds or thousands of numbers per token. We'll use just two, so we can draw them on a map.
+
+Nobody writes these numbers by hand. They are learned during training, and something remarkable happens: tokens with related meanings end up pointing in **similar directions**.
+
+## Measuring similarity
+
+To compare two vectors, models often use **cosine similarity**: how closely do the two arrows point the same way? It's 1 for exactly the same direction, 0 for a right angle and −1 for opposite directions. The length of the arrows doesn't matter — only the direction.
+
+Move the words around (tap a word, then tap a spot) and compare any two:
+
+<EmbeddingExplorer client:visible />
+
+## Directions carry meaning
+
+In well-trained embeddings, directions can mean something. Going from "man" to "woman" is a step in one direction; going from "king" to "queen" is roughly the same step. That's why the famous trick works:
+
+**king − man + woman ≈ queen**
+
+Real embedding spaces are messy, and this works only approximately — but it shows that the model has organized meaning into geometry.
+
+## Your turn
+
+In the puzzle, "queen" is in the wrong place, so the nearest word to *king − man + woman* is "prince". Move "queen" so it becomes the nearest word.

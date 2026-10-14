@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/url';
+---
+<Layout title="About" description="What Learn LLMs is, how it works, and how it treats your privacy.">
+  <div class="prose">
+    <h1>About Learn LLMs</h1>
+    <p>Learn LLMs teaches how large language models work by letting you play with tiny, real models. Every number you see is computed live in your browser — nothing is faked and nothing is sent to a server.</p>
+    <h2>How the levels work</h2>
+    <p>Each level has three parts: <strong>Explore</strong> (an interactive explanation), a <strong>Puzzle</strong> (reach the goal shown in the side panel), and an optional <strong>Code</strong> challenge (write the function yourself; your code runs only in your browser).</p>
+    <h2>Privacy</h2>
+    <p>This site uses no cookies, no analytics and no tracking. Your progress is stored only in your browser's local storage. You can export it, import it, or erase it from the ☰ Menu.</p>
+    <h2>Author</h2>
+    <p>Learn LLMs is created and maintained by Mehran Keivanimehr.</p>
+    <h2>License</h2>
+    <p>The source code is free and open under the MIT License.</p>
+    <h2>Credits</h2>
+    <p>Inspired by <a href="https://learngitbranching.js.org/">Learn Git Branching</a>. The level 8 model was trained on public-domain verse ("The Star" by Jane Taylor, 1806, and "Mary Had a Little Lamb" by Sarah Josepha Hale, 1830).</p>
+    <p><a href={withBase('inside/')}>Go to the levels →</a></p>
+  </div>
+</Layout>

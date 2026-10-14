@@ -1,0 +1,75 @@
+.level-bar { display: grid; gap: .25rem; margin-bottom: 1rem; }
+.level-bar h1 { margin: 0; }
+.crumbs { margin: 0; color: var(--muted); }
+.level-nav { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; }
+.dots { list-style: none; display: flex; flex-wrap: wrap; gap: .1rem; margin: 0; padding: 0; }
+.dot { display: inline-block; width: 24px; height: 24px; position: relative; }
+.dot::after { content: ''; position: absolute; inset: 6px; border-radius: 50%; border: 2px solid var(--muted); }
+.dot.solved::after { background: var(--good); border-color: var(--good); }
+.dot.current::after { box-shadow: 0 0 0 3px var(--focus); }
+
+.tabs { display: flex; gap: .25rem; border-bottom: 2px solid var(--border); margin: 1rem 0; overflow-x: auto; }
+.tabs [role="tab"] { border: none; border-bottom: 3px solid transparent; border-radius: 0; background: none; padding: .5rem 1rem; font-weight: 600; color: var(--muted); }
+.tabs [role="tab"][aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+.tabs [role="tab"][aria-disabled="true"] { cursor: not-allowed; }
+.explore-end { margin: 2rem 0 1rem; }
+
+.puzzle { display: grid; gap: 1.25rem; }
+@media (min-width: 900px) { .puzzle { grid-template-columns: minmax(0, 1fr) 300px; align-items: start; } }
+.stage, .stack { min-width: 0; }
+.stack { display: grid; gap: 1rem; }
+/* Grid items default to min-width: auto, which lets wide visuals (heatmaps) stretch the page.
+   min-width: 0 keeps them inside the column so their own .scroll-x wrapper scrolls instead. */
+.stack > * { min-width: 0; }
+.side { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+.side h2 { margin-top: 0; font-size: 1.15rem; }
+.side h3 { font-size: 1rem; margin-bottom: .25rem; }
+.goal-box { background: var(--surface-2); border-radius: 8px; padding: .5rem .75rem; }
+.goal-box p { margin: 0; }
+.checker { list-style: none; padding: 0; display: grid; gap: .35rem; margin: 0; }
+.checker .met { color: var(--good); }
+.button-row { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0; }
+.hints { padding-left: 1.25rem; }
+
+.overlay-backdrop { position: fixed; inset: 0; background: rgb(0 0 0 / .45); display: grid; place-items: center; padding: 16px; z-index: 50; }
+.overlay { background: var(--surface); color: var(--text); border-radius: var(--radius); padding: 1.5rem; max-width: 420px; width: 100%; box-shadow: 0 10px 40px rgb(0 0 0 / .3); }
+.overlay h2 { margin-top: 0; }
+
+.challenge .editor { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin: .75rem 0; }
+.test-results { list-style: none; padding: 0; display: grid; gap: .35rem; }
+.good { color: var(--good); }
+.bad { color: var(--bad); }
+.test-detail { font-family: var(--mono); font-size: .85rem; color: var(--text); margin-left: 1.5rem; overflow-wrap: anywhere; }
+
+.site-menu { position: relative; }
+.menu-panel { position: absolute; right: 0; top: calc(100% + .5rem); width: min(340px, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; z-index: 40; display: grid; gap: .75rem; box-shadow: 0 8px 30px rgb(0 0 0 / .15); }
+.menu-panel h2 { font-size: 1rem; margin: 0; }
+.menu-panel section { display: grid; gap: .5rem; }
+.menu-panel textarea { width: 100%; font-family: var(--mono); font-size: .8rem; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 6px; }
+.menu-panel fieldset { border: 1px solid var(--border); border-radius: 8px; display: grid; gap: .25rem; }
+
+.notice { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; justify-content: space-between; background: var(--surface-2); border: 1px solid var(--border); border-left: 4px solid var(--bar-highlight); border-radius: 8px; padding: .5rem 1rem; margin-bottom: 1rem; }
+.notice p { margin: 0; }
+
+.level-cards { list-style: none; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.level-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+.level-card h2 { font-size: 1.1rem; margin: 0 0 .25rem; }
+.level-card .num { display: inline-grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--accent); color: var(--accent-text); margin-right: .5rem; font-size: .9rem; }
+.badges { display: flex; flex-wrap: wrap; gap: .4rem; margin: .5rem 0 0; }
+.badge { font-size: .8rem; border: 1px solid var(--border); border-radius: 999px; padding: .1rem .6rem; color: var(--muted); }
+.badge.good { border-color: var(--good); color: var(--good); }
+
+.widget-error { border: 2px solid var(--bad); border-radius: 8px; padding: .75rem 1rem; }
+
+.chips, .chip-palette { list-style: none; display: flex; flex-wrap: wrap; gap: .4rem; padding: 0; margin: .25rem 0 .75rem; }
+.chip { display: inline-flex; align-items: center; gap: .25rem; padding: .1rem .2rem .1rem .6rem; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border); }
+.chip button { min-height: 32px; min-width: 32px; padding: 0; border-radius: 50%; border: none; background: transparent; }
+.chip-button { min-height: 36px; padding: .2rem .7rem; border-radius: 999px; }
+.label { font-weight: 600; margin: 0; }
+.prompt-form { display: flex; flex-wrap: wrap; gap: .5rem; align-items: end; }
+.prompt-form label { width: 100%; font-weight: 600; }
+.prompt-form input { font: inherit; padding: .45rem .6rem; border: 1px solid var(--border); border-radius: 8px; min-height: 44px; flex: 1 1 14rem; background: var(--surface); color: var(--text); }
+.generation { font-family: var(--mono); white-space: pre-wrap; background: var(--surface-2); padding: .75rem; border-radius: 8px; overflow-wrap: anywhere; }
+.toggle[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+.answer-cards { display: grid; gap: 1rem; }
+@media (min-width: 700px) { .answer-cards { grid-template-columns: 1fr 1fr; } }

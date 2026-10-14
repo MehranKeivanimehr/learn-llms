@@ -1,0 +1,133 @@
+---
+import ProgressDots from '../components/ProgressDots';
+import type { LevelInfo } from '../lib/levels';
+import { withBase } from '../lib/url';
+import CodeIsland from './CodeIsland';
+import PuzzleIsland from './PuzzleIsland';
+
+interface Props {
+  level: LevelInfo;
+  prev: LevelInfo | null;
+  next: LevelInfo | null;
+  all: LevelInfo[];
+}
+const { level, prev, next, all } = Astro.props;
+const trackHref = withBase('inside/');
+const dots = all.map((l) => ({ levelId: l.levelId, title: l.title, href: l.href }));
+---
+<div class="level" data-level-id={level.levelId}>
+  <div class="level-bar">
+    <p class="crumbs"><a href={trackHref}>How LLMs Work Inside</a> › Level {level.order} of {all.length}</p>
+    <h1>{level.title}</h1>
+    <nav class="level-nav" aria-label="Level navigation">
+      {prev ? <a href={prev.href} rel="prev">← {prev.title}</a> : <span></span>}
+      <ProgressDots client:load levels={dots} currentId={level.levelId} />
+      {next ? <a href={next.href} rel="next">{next.title} →</a> : <span></span>}
+    </nav>
+  </div>
+
+  <div role="tablist" aria-label="Parts of this level" class="tabs">
+    <button type="button" role="tab" id="tab-explore" aria-controls="panel-explore" aria-selected="true" tabindex="0">Explore</button>
+    <button type="button" role="tab" id="tab-puzzle" aria-controls="panel-puzzle" aria-selected="false" aria-disabled="true" tabindex="-1">Puzzle<span data-lock aria-hidden="true"> 🔒</span><span data-lock class="sr-only"> (reach the end of Explore to unlock)</span></button>
+    <button type="button" role="tab" id="tab-code" aria-controls="panel-code" aria-selected="false" tabindex="-1">Code</button>
+  </div>
+
+  <section role="tabpanel" id="panel-explore" aria-labelledby="tab-explore" class="prose">
+    <slot />
+    <div class="explore-end" data-explore-end>
+      <button type="button" class="primary" data-go-puzzle>Try the puzzle →</button>
+    </div>
+  </section>
+
+  <section role="tabpanel" id="panel-puzzle" aria-labelledby="tab-puzzle" hidden>
+    <PuzzleIsland
+      client:load
+      puzzleId={level.puzzle}
+      levelId={level.levelId}
+      nextHref={next ? next.href : trackHref}
+      nextTitle={next ? `Next: ${next.title}` : 'Back to the level map'}
+    />
+  </section>
+
+  <section role="tabpanel" id="panel-code" aria-labelledby="tab-code" hidden>
+    {level.challenge ? (
+      <CodeIsland client:only="react" challengeId={level.challenge} levelId={level.levelId} />
+    ) : (
+      <p>This level has no code challenge.</p>
+    )}
+  </section>
+</div>
+
+<script>
+  import { getProgressStore } from './progressStore';
+
+  const root = document.querySelector<HTMLElement>('.level');
+  if (root) {
+    const levelId = root.dataset.levelId ?? '';
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const puzzleTab = root.querySelector<HTMLButtonElement>('#tab-puzzle');
+
+    const isEnabled = (t: HTMLButtonElement) => t.getAttribute('aria-disabled') !== 'true';
+
+    function unlock() {
+      if (!puzzleTab || isEnabled(puzzleTab)) return;
+      puzzleTab.setAttribute('aria-disabled', 'false');
+      puzzleTab.querySelectorAll('[data-lock]').forEach((n) => n.remove());
+    }
+
+    function select(tab: HTMLButtonElement, focus = true) {
+      if (!isEnabled(tab)) return;
+      for (const t of tabs) {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      }
+      if (focus) tab.focus();
+    }
+
+    tabs.forEach((t) => t.addEventListener('click', () => select(t)));
+
+    root.querySelector('[role="tablist"]')?.addEventListener('keydown', (event) => {
+      const e = event as KeyboardEvent;
+      const enabled = tabs.filter(isEnabled);
+      const i = enabled.indexOf(document.activeElement as HTMLButtonElement);
+      if (i < 0) return;
+      let next = -1;
+      if (e.key === 'ArrowRight') next = (i + 1) % enabled.length;
+      else if (e.key === 'ArrowLeft') next = (i - 1 + enabled.length) % enabled.length;
+      else if (e.key === 'Home') next = 0;
+      else if (e.key === 'End') next = enabled.length - 1;
+      if (next >= 0) {
+        e.preventDefault();
+        select(enabled[next]);
+      }
+    });
+
+    if (getProgressStore().level(levelId).solved) unlock();
+
+    const end = root.querySelector('[data-explore-end]');
+    if (end && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          unlock();
+          observer.disconnect();
+        }
+      });
+      observer.observe(end);
+    } else {
+      unlock();
+    }
+
+    root.querySelector('[data-go-puzzle]')?.addEventListener('click', () => {
+      unlock();
+      if (puzzleTab) {
+        select(puzzleTab);
+        root.querySelector('.tabs')?.scrollIntoView({ block: 'start' });
+      }
+    });
+
+    if (location.hash === '#puzzle' && puzzleTab && isEnabled(puzzleTab)) select(puzzleTab, false);
+  }
+</script>

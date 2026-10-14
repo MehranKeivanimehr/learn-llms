@@ -1,0 +1,38 @@
+---
+levelId: inside-5
+track: inside
+order: 5
+title: Attention
+summary: How does the model know what "it" refers to? Attention lets every word look at every other word and decide what matters.
+puzzle: inside-5
+challenge: inside-5
+---
+import AttentionExplorer from '../../../explore/AttentionExplorer';
+
+## Words need context
+
+Read this: *"The animal didn't cross the street because **it** was tired."* You know "it" means the animal, not the street — streets don't get tired. To understand "it", you had to look at other words.
+
+**Attention** is how a transformer does this. Each word's vector gets updated using information from the other words, and the model *learns* which words are worth looking at.
+
+## Queries, keys and values
+
+Every word produces three vectors:
+
+- a **query** — "what am I looking for?"
+- a **key** — "what do I contain?"
+- a **value** — "what will I share if someone looks at me?"
+
+For the word "it", the model compares its query with every word's key using a dot product. A big dot product means "this key matches what I'm looking for". The scores are divided by √d (the vector length, to keep numbers stable) and passed through softmax, giving **attention weights** that add up to 1. Finally, "it" collects a weighted mix of everyone's values.
+
+Change the query for "it" and watch where its attention goes:
+
+<AttentionExplorer client:visible />
+
+## Many words at once
+
+In a real model, *every* word does this at the same time, each with its own query. And the query, key and value vectors aren't hand-made: they're computed from each word's embedding using matrices the model learned during training.
+
+## Your turn
+
+In the puzzle, the query for "it" is pointing the wrong way — it attends more to "street" than "animal". Tune the query so attention to "animal" is above 0.50 and to "street" is below 0.20.

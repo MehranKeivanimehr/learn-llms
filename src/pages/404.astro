@@ -1,0 +1,8 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { withBase } from '../lib/url';
+---
+<Layout title="Page not found" description="This page does not exist.">
+  <h1>Page not found</h1>
+  <p>That page doesn't exist. <a href={withBase('')}>Go to the home page</a> or <a href={withBase('inside/')}>see all levels</a>.</p>
+</Layout>

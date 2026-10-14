@@ -1,0 +1,37 @@
+---
+levelId: inside-4
+track: inside
+order: 4
+title: Sampling
+summary: The model gives probabilities — you decide how to pick from them. Temperature, top-k and top-p trade creativity for reliability.
+puzzle: inside-4
+challenge: inside-4
+---
+import SamplingExplorer from '../../../explore/SamplingExplorer';
+
+## From probabilities to one token
+
+The model's last step gives a probability for every possible next token. Something still has to **choose** one. That choice is called **sampling**, and it's controlled by a few settings you may have seen in AI tools.
+
+- **Greedy:** always take the most likely token. Predictable, but often dull and repetitive.
+- **Random sampling:** roll a weighted die. Likely tokens win most of the time, but not always — that's where variety comes from.
+
+## The three knobs
+
+**Temperature** reshapes the probabilities before rolling the die. Low temperature (near 0) makes the favourite even more dominant; at 0 the choice becomes greedy. High temperature flattens everything, so unlikely tokens get picked more often.
+
+**Top-k** keeps only the *k* most likely tokens and throws the rest away.
+
+**Top-p** (also called *nucleus sampling*) keeps the smallest group of top tokens whose probabilities add up to at least *p* — say 90% — and throws away the long tail.
+
+Play with the knobs, then sample a few times:
+
+<SamplingExplorer client:visible />
+
+## Why this matters
+
+Low temperature is good for facts, code and anything that must be consistent. Higher temperature helps brainstorming and creative writing. Top-k and top-p let you keep some creativity while cutting off the silly long tail — like "spaceship" here.
+
+## Your turn
+
+The puzzle has two goals. First, make the model **completely predictable**. Then let it **vary** between at least three sensible words while making silly words impossible.

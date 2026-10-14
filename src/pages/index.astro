@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import TrackProgress from '../components/TrackProgress';
+import Layout from '../layouts/Layout.astro';
+import { sortLevels, toLevelInfo } from '../lib/levels';
+import { withBase } from '../lib/url';
+
+const levels = sortLevels(await getCollection('levels')).map(toLevelInfo);
+const firstHref = levels[0]?.href ?? withBase('inside/');
+---
+<Layout title="Learn LLMs" description="Learn how large language models work by playing with tiny, real models right in your browser. Free, interactive, no sign-up.">
+  <section class="hero">
+    <h1>Learn how LLMs work — by playing with them</h1>
+    <p class="lead">Every level hands you a tiny, real language model to poke at. Explore an idea, solve a puzzle, and — if you like — write the code yourself.</p>
+    <p><a class="button primary" href={firstHref}>Start level 1</a></p>
+  </section>
+  <section class="track-card">
+    <h2><a href={withBase('inside/')}>How LLMs Work Inside</a></h2>
+    <p>Tokens, embeddings, sampling, attention and the transformer block — from first principles to a model that writes.</p>
+    <TrackProgress client:load levelIds={levels.map((l) => l.levelId)} />
+  </section>
+  <section class="coming-soon">
+    <h2>Coming later</h2>
+    <ul>
+      <li>How LLMs are trained</li>
+      <li>Using LLMs well</li>
+      <li>Try a real small LLM in your browser</li>
+      <li>LLM news, explained</li>
+    </ul>
+  </section>
+</Layout>

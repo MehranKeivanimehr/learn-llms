@@ -1,0 +1,37 @@
+---
+levelId: inside-7
+track: inside
+order: 7
+title: The transformer block
+summary: Attention, a small neural network, residual connections and normalization — stacked into the block that every LLM repeats dozens of times.
+puzzle: inside-7
+challenge: inside-7
+---
+import BlockFlowExplorer from '../../../explore/BlockFlowExplorer';
+
+## Putting the pieces together
+
+You've met the main ideas: tokens become vectors, attention mixes information between words, and position signals keep word order. A **transformer block** packages them into one repeatable unit:
+
+1. **Self-attention** — every word gathers information from the others.
+2. **Add & Norm** — add the result back onto the input, then normalize.
+3. **MLP** (a small feed-forward neural network) — each word is processed on its own; this is where a lot of the model's "knowledge" is stored.
+4. **Add & Norm** — again.
+
+An LLM stacks this block many times — GPT-3 used 96 of them. The output of one block is the input of the next.
+
+## Why "Add"?
+
+The **residual connection** adds each sub-layer's output to its input instead of replacing it. Each block only has to learn a *change* to the vectors, and information from early layers can flow straight through. Without it, very deep models are almost impossible to train.
+
+## Why "Norm"?
+
+**Layer normalization** rescales each vector to have mean 0 and variance 1. It keeps the numbers in a healthy range as they pass through dozens of blocks. (Many modern models normalize *before* each sub-layer instead of after; the idea is the same.)
+
+Step through one block with real numbers:
+
+<BlockFlowExplorer client:visible />
+
+## Your turn
+
+The puzzle hands you the four pieces in a jumble. Put them in the order that produces the goal output.

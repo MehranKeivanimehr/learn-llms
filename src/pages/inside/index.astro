@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content';
+import TrackMap from '../../components/TrackMap';
+import Layout from '../../layouts/Layout.astro';
+import { sortLevels, toLevelInfo } from '../../lib/levels';
+
+const levels = sortLevels(await getCollection('levels')).map(toLevelInfo);
+const cards = levels.map((l) => ({
+  levelId: l.levelId,
+  order: l.order,
+  title: l.title,
+  summary: l.summary,
+  href: l.href,
+  hasChallenge: l.challenge !== null,
+}));
+---
+<Layout title="How LLMs Work Inside" description="Eight interactive levels: next-token prediction, tokens, embeddings, sampling, attention, word order, the transformer block and text generation.">
+  <h1>How LLMs Work Inside</h1>
+  <p class="lead">From "an LLM guesses the next word" to a tiny model that writes text. In each level you explore an idea, solve a puzzle, and — if you like — write the code.</p>
+  <TrackMap client:load levels={cards} />
+</Layout>
