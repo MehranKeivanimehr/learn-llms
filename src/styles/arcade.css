@@ -88,6 +88,9 @@
 .arc-svg .node-text { fill: #123a66; font-weight: 700; font-size: 18px; }
 .arc-svg .node.hl + .node-text { fill: var(--on-yellow); }
 .arc-svg .weight-text { fill: #fff; font-size: 16px; }
+.arc-svg.wide .node-text { font-size: 24px; }
+.arc-svg.wide .weight-text { font-size: 22px; }
+.scene .answer-cards { grid-template-columns: minmax(0, 1fr); }
 .arc-svg .wave { fill: none; stroke: var(--yellow); stroke-width: 3; transition: opacity .4s; }
 .arc-svg .bubble { fill: rgba(255, 255, 255, .15); stroke: #fff; }
 .arc-svg .bubble-text { fill: #fff; font-size: 16px; }
