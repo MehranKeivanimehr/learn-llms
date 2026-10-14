@@ -325,6 +325,7 @@ function LevelRuntime({ level, levels, homeHref, trackHref, module }: Props & { 
           levelTitle={level.title}
           commands={commands}
           start={def.start()}
+          apply={def.apply}
           best={progress.levels[level.levelId]?.examBest ?? null}
           nextHref={next ? next.href : trackHref}
           nextTitle={next ? `Next: ${next.title}` : 'Back to the level map'}

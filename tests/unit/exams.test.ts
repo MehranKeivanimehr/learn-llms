@@ -42,6 +42,25 @@ describe('gradeAnswer', () => {
   });
 });
 
+describe('grading by effect and by number', () => {
+  it('accepts a command that differs only in ways the level ignores (prompt capitalisation)', async () => {
+    const m = await levelModules['inside-8']();
+    const q = m.exam.questions.find((x) => x.kind === 'command' && x.example.startsWith('prompt'))!;
+    const ctx = { commands: m.commands, start: m.def.start(), apply: m.def.apply };
+    expect(gradeAnswer(q, 'prompt "Twinkle, twinkle, "', ctx)).toBe(true);
+    expect(gradeAnswer(q, 'prompt "twinkle, twinkle,"', ctx)).toBe(false);
+  });
+  it('compares numeric answers as numbers', () => {
+    const q: ExamQuestion = { kind: 'text', prompt: 'p', accept: ['2', 'two'], explain: 'e' };
+    expect(gradeAnswer(q, '2.0')).toBe(true);
+    expect(gradeAnswer(q, '2 tokens')).toBe(true);
+    expect(gradeAnswer(q, 'Two')).toBe(true);
+    expect(gradeAnswer(q, '3')).toBe(false);
+    const zero: ExamQuestion = { kind: 'text', prompt: 'p', accept: ['0', 'zero'], explain: 'e' };
+    expect(gradeAnswer(zero, '0.00')).toBe(true);
+  });
+});
+
 describe('every level has a well-formed exam', () => {
   for (const def of allPuzzleDefs) {
     it(def.id, async () => {
@@ -64,7 +83,7 @@ describe('every level has a well-formed exam', () => {
           expect(q.accept.length).toBeGreaterThan(0);
           for (const a of q.accept) expect(gradeAnswer(q, a)).toBe(true);
         } else {
-          expect(gradeAnswer(q, q.example, { commands: m.commands, start: m.def.start() }), q.example).toBe(true);
+          expect(gradeAnswer(q, q.example, { commands: m.commands, start: m.def.start(), apply: m.def.apply }), q.example).toBe(true);
         }
       }
     });

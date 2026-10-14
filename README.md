@@ -1,6 +1,6 @@
 # Learn LLMs
 
-An interactive, game-like website that teaches how large language models work. Each level is a full-screen arcade: type commands in the terminal (or use the canvas), watch a tiny real model react, and solve the goal. Lessons open as short slides with a "Show me" demo, and every level has an optional code challenge. Everything runs in your browser — no accounts, no cookies, no tracking.
+An interactive, game-like website that teaches how large language models work. Each level is a full-screen arcade: type commands in the terminal (or use the canvas), watch a tiny real model react, and solve the goal. Lessons open as short slides with a "Show me" demo, and every level ends with an optional 5-question exam and an optional code challenge. Everything runs in your browser — no accounts, no cookies, no tracking.
 
 Created by Mehran Keivanimehr.
 

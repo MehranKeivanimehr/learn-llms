@@ -10,6 +10,8 @@ interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   commands: LevelCommandSet<any, any>;
   start: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  apply: (state: any, action: any) => any;
   best: number | null;
   nextHref: string;
   nextTitle: string;
@@ -30,7 +32,7 @@ function verdict(score: number, total: number): string {
   return 'Reread the lesson with “Instructions” and try again any time.';
 }
 
-export function ExamDialog({ exam, levelTitle, commands, start, best, nextHref, nextTitle, onFinish, onClose }: Props) {
+export function ExamDialog({ exam, levelTitle, commands, start, apply, best, nextHref, nextTitle, onFinish, onClose }: Props) {
   const [index, setIndex] = useState(0);
   const [choice, setChoice] = useState<number | null>(null);
   const [text, setText] = useState('');
@@ -41,6 +43,7 @@ export function ExamDialog({ exam, levelTitle, commands, start, best, nextHref, 
   const [attempt, setAttempt] = useState(0);
   const nextRef = useRef<HTMLAnchorElement>(null);
   const firstInput = useRef<HTMLInputElement>(null);
+  const actionButton = useRef<HTMLButtonElement>(null);
   const mounted = useRef(false);
 
   const total = exam.questions.length;
@@ -56,17 +59,25 @@ export function ExamDialog({ exam, levelTitle, commands, start, best, nextHref, 
     }
     if (done) nextRef.current?.focus();
     else firstInput.current?.focus();
-  }, [done, attempt]);
+  }, [done, attempt, index]);
+
+  // After grading, the answer controls are locked; put focus on the button that moves on.
+  useEffect(() => {
+    if (result !== null) actionButton.current?.focus();
+  }, [result]);
 
   function check(e?: FormEvent) {
     e?.preventDefault();
-    if (result !== null) return;
+    if (result !== null) {
+      next();
+      return;
+    }
     const answer = q.kind === 'choice' ? choice : text;
     if (answer === null || (typeof answer === 'string' && answer.trim() === '')) {
       setMissing(true);
       return;
     }
-    const ok = gradeAnswer(q, answer, { commands, start });
+    const ok = gradeAnswer(q, answer, { commands, start, apply });
     setMissing(false);
     setResult(ok);
     if (ok) setScore((s) => s + 1);
@@ -176,7 +187,7 @@ export function ExamDialog({ exam, levelTitle, commands, start, best, nextHref, 
           </div>
           <div className="modal-actions">
             <span className="spacer" />
-            <button type={result === null ? 'submit' : 'button'} className="primary" onClick={result === null ? undefined : next}>
+            <button ref={actionButton} type={result === null ? 'submit' : 'button'} className="primary" onClick={result === null ? undefined : next}>
               {result === null ? 'Check answer' : last ? 'See your score' : 'Next question →'}
             </button>
           </div>

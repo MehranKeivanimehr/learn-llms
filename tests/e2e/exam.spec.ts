@@ -95,6 +95,30 @@ test('the exam works by keyboard and passes axe; Escape returns to the level', a
   await expect(command(page)).toBeFocused();
 });
 
+test('Enter checks an answer, Enter again moves on, and focus follows', async ({ page }) => {
+  await openLevel(page, L1);
+  await type(page, 'exam');
+  const dialog = page.getByRole('dialog', { name: EXAM });
+  await expect(dialog.getByRole('radio').first()).toBeFocused();
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+  await expect(dialog.getByRole('status')).toContainText('Correct!');
+  await expect(dialog.getByRole('button', { name: 'Next question →' })).toBeFocused();
+  await page.keyboard.press('Enter');
+  await expect(dialog).toContainText('Question 2 of 5');
+  await expect(dialog.getByRole('radio').first()).toBeFocused();
+  for (let i = 0; i < 3; i++) await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('Enter');
+  await expect(dialog).toContainText('Question 3 of 5');
+  await expect(dialog.getByLabel('Your answer')).toBeFocused();
+  await page.keyboard.type('add France');
+  await page.keyboard.press('Enter');
+  await expect(dialog.getByRole('status')).toContainText('Correct!');
+  await page.keyboard.press('Enter');
+  await expect(dialog).toContainText('Question 4 of 5');
+});
+
 test.describe('phone', () => {
   test.use({ viewport: { width: 375, height: 812 }, hasTouch: true, isMobile: true });
   test('the exam can be answered by tapping', async ({ page }) => {
